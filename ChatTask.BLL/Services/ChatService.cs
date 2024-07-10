@@ -51,4 +51,9 @@ public class ChatService : IChatService
     {
         return await _chatRepository.GetChatByName(chatName) ?? throw new ArgumentException("Chat not found");
     }
+    
+    public async Task<List<Chat>> GetChatsByUserId(Guid userId)
+    {
+        return await _chatRepository.GetChatsByUserId(userId);
+    }
 }

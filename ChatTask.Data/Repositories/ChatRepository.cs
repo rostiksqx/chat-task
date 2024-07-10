@@ -97,4 +97,22 @@ public class ChatRepository : IChatRepository
         
         return chat;
     }
+    
+    public async Task<List<Chat>> GetChatsByUserId(Guid userId)
+    {
+        var chatsEntity = await _dbContext.Chats
+            .AsNoTracking()
+            .Where(c => c.CreatorId == userId)
+            .ToListAsync();
+        
+        var chats = chatsEntity.Select(chatEntity => new Chat
+        {
+            Id = chatEntity.Id,
+            Name = chatEntity.Name,
+            CreatorId = chatEntity.CreatorId,
+            CreatedAt = chatEntity.CreatedAt
+        }).ToList();
+        
+        return chats;
+    }
 }

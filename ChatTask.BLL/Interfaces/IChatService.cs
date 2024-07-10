@@ -8,4 +8,5 @@ public interface IChatService
     Task<Guid> CreateChat(string name, Guid creatorId);
     Task<Guid> DeleteChat(Guid chatId, Guid creatorId);
     Task<Chat> GetChatByName(string chatName);
+    Task<List<Chat>> GetChatsByUserId(Guid userId);
 }

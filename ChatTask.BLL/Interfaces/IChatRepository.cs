@@ -9,4 +9,5 @@ public interface IChatRepository
     Task<Guid> Delete(Guid chatId);
     Task<Chat?> GetChatById(Guid chatId);
     Task<Chat?> GetChatByName(string chatName);
+    Task<List<Chat>> GetChatsByUserId(Guid userId);
 }

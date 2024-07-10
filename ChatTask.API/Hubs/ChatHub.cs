@@ -18,30 +18,32 @@ public class ChatHub : Hub
         await Clients.Group(chatRoom).SendAsync("ReceiveMessage", user, message);
     }
     
-    public async Task CreateChatRoom(string chatRoom, Guid userId)
+    [HubMethodName("CreateChatRoom")]
+    public async Task<Guid> CreateChatRoom(string chatRoom, Guid userId)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom);
-        await _chatService.CreateChat(chatRoom, userId);
+        await Clients.All.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} has been created.");
+        return await _chatService.CreateChat(chatRoom, userId);
     }
     
-    public async Task JoinChatRoom(string chatRoom)
+    public async Task JoinChatRoom(string chatRoom, string username)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom);
-        await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{Context.User.Identity.Name} has joined the chat");
+        await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has joined the chat");
     }
 
-    public async Task LeaveChatRoom(string chatRoom, Guid userId)
+    public async Task LeaveChatRoom(string chatRoom, Guid userId, string username)
     {
         var chat = await _chatService.GetChatByName(chatRoom);
         if (chat.CreatorId == userId)
         {
             await _chatService.DeleteChat(chat.Id, userId);
-            await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", "The chat has been deleted by the creator.");
+            await Clients.All.SendAsync("ReceiveMessage", "Admin", $"The chat `{chatRoom}` has been deleted by the creator.");
         }
         else
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatRoom);
-            await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{Context.User.Identity.Name} has left the chat");
+            await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has left the chat");
         }
     }
 }
