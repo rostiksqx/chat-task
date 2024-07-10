@@ -1,0 +1,6 @@
+﻿services:
+  chattask.api:
+    image: chattask.api
+    build:
+      context: .
+      dockerfile: ChatTask.API/Dockerfile
