@@ -10,4 +10,6 @@ public class ChatDbContext : DbContext
     }
     
     public DbSet<UserEntity> Users { get; set; }
+    
+    public DbSet<ChatEntity> Chats { get; set; }
 }
