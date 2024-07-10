@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatTask.Data", "ChatTask.Data\ChatTask.Data.csproj", "{2E498257-CFBF-4F84-8C0D-E8B0DA3A566F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatTask.BLL", "ChatTask.BLL\ChatTask.BLL.csproj", "{F70A4744-71BA-412D-AE98-AC4727C779DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,5 +21,13 @@ Global
 		{E7DBAE0E-336C-421D-B9F7-A15A9208EB56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7DBAE0E-336C-421D-B9F7-A15A9208EB56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7DBAE0E-336C-421D-B9F7-A15A9208EB56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E498257-CFBF-4F84-8C0D-E8B0DA3A566F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E498257-CFBF-4F84-8C0D-E8B0DA3A566F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E498257-CFBF-4F84-8C0D-E8B0DA3A566F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E498257-CFBF-4F84-8C0D-E8B0DA3A566F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F70A4744-71BA-412D-AE98-AC4727C779DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70A4744-71BA-412D-AE98-AC4727C779DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70A4744-71BA-412D-AE98-AC4727C779DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F70A4744-71BA-412D-AE98-AC4727C779DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
