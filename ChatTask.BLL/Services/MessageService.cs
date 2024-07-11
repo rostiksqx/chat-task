@@ -17,7 +17,7 @@ public class MessageService : IMessageService
         return await _messageRepository.GetMessagesByChatId(chatId);
     }
     
-    public async Task<Guid> Add(Guid chatId, Guid userId, string message)
+    public async Task<(Guid, Exception?)> Add(Guid chatId, Guid userId, string message)
     {
         var newMessage = new Message
         {
@@ -30,7 +30,7 @@ public class MessageService : IMessageService
         return await _messageRepository.Add(newMessage);
     }
     
-    public async Task<Guid> Delete(Guid messageId)
+    public async Task<(Guid, Exception?)> Delete(Guid messageId)
     {
         return await _messageRepository.Delete(messageId);
     }

@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task<Guid> Add(User user)
+    public async Task<(Guid, Exception?)> Add(User user)
     {
         var userEntity = new UserEntity
         {
@@ -42,9 +42,14 @@ public class UserRepository : IUserRepository
         };
         
         _dbContext.Users.Add(userEntity);
-        await _dbContext.SaveChangesAsync();
+        var ex = await _dbContext.SafeSave();
         
-        return userEntity.Id;
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
+        
+        return (userEntity.Id, null);
     }
 
     public async Task<User?> GetUserById(Guid id)

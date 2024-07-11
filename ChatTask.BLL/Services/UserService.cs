@@ -15,7 +15,7 @@ public class UserService : IUserService
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<Guid> Register(string username, string password)
+    public async Task<(Guid, Exception?)> Register(string username, string password)
     {
         var existingUser = await _userRepository.GetUserByUserName(username);
 
@@ -30,9 +30,8 @@ public class UserService : IUserService
             Username = username,
             PasswordHash = _passwordHasher.HashPassword(password)
         };
-        await _userRepository.Add(user);
-
-        return user.Id;
+        
+        return await _userRepository.Add(user);
     }
 
     public async Task<Guid> Login(string username, string password)

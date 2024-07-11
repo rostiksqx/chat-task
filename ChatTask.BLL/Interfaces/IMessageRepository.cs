@@ -5,6 +5,6 @@ namespace ChatTask.Data.Repositories;
 public interface IMessageRepository
 {
     Task<List<Message>> GetMessagesByChatId(Guid chatId);
-    Task<Guid> Add(Message message);
-    Task<Guid> Delete(Guid messageId);
+    Task<(Guid, Exception?)> Add(Message message);
+    Task<(Guid, Exception?)> Delete(Guid messageId);
 }

@@ -27,7 +27,7 @@ public class MessageRepository : IMessageRepository
             }).ToListAsync();
     }
     
-    public async Task<Guid> Add(Message message)
+    public async Task<(Guid, Exception?)> Add(Message message)
     {
         var messageEntity = new MessageEntity
         {
@@ -38,18 +38,29 @@ public class MessageRepository : IMessageRepository
         };
         
         await _dbContext.Messages.AddAsync(messageEntity);
-        await _dbContext.SaveChangesAsync();
+        var ex = await _dbContext.SafeSave();
         
-        return messageEntity.Id;
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
+        
+        return (messageEntity.Id, null);
     }
     
-    public async Task<Guid> Delete(Guid messageId)
+    public async Task<(Guid, Exception?)> Delete(Guid messageId)
     {
         await _dbContext.Messages
             .Where(m => m.Id == messageId)
             .ExecuteDeleteAsync();
-        await _dbContext.SaveChangesAsync();
 
-        return messageId;
+        var ex = await _dbContext.SafeSave();
+        
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
+
+        return (messageId, null);
     }
 }

@@ -28,7 +28,12 @@ public class ChatHub : Hub
         
         await Clients.Group(chatRoom).SendAsync("ReceiveMessage", userId, message);
         
-        await _messageService.Add(existChat.Id, userId, message);
+        var result = await _messageService.Add(existChat.Id, userId, message);
+        
+        if (result.Item2 != null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", result.Item2.Message);
+        }
     }
     
     [HubMethodName("CreateChatRoom")]
