@@ -22,7 +22,7 @@ public class ChatHub : Hub
         
         if (existChat == null)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Check the chat room name and try again.");
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room `{chatRoom}` does not exist. Check the chat room name and try again.");
             return;
         }
         
@@ -35,8 +35,15 @@ public class ChatHub : Hub
     public async Task<Guid> CreateChatRoom(string chatRoom, Guid userId)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom);
-        await Clients.All.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} has been created.");
-        return await _chatService.CreateChat(chatRoom, userId);
+        await Clients.All.SendAsync("ReceiveMessage", "Admin", $"Chat room `{chatRoom}` has been created.");
+        var result = await _chatService.CreateChat(chatRoom, userId);
+        
+        if (result.Item2 != null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", result.Item2.Message);
+        }
+        
+        return result.Item1;
     }
     
     [HubMethodName("JoinChatRoom")]
@@ -46,12 +53,12 @@ public class ChatHub : Hub
         
         if (chat == null)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Check the chat room name and try again.");
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room `{chatRoom}` does not exist. Check the chat room name and try again.");
             return;
         }
         
         await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom);
-        await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has joined to the {chatRoom}");
+        await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has joined to the `{chatRoom}`");
     }
 
     [HubMethodName("LeaveChatRoom")]
@@ -61,14 +68,14 @@ public class ChatHub : Hub
         
         if (chat == null)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Leave failed.");
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room `{chatRoom}` does not exist. Leave failed.");
             return;
         }
         
         if (chat.CreatorId == userId)
         {
             await _chatService.DeleteChat(chat.Id, userId);
-            await Clients.All.SendAsync("ReceiveMessage", "Admin", $"The chat `{chatRoom}` has been deleted by the creator.");
+            await Clients.All.SendAsync("ReceiveMessage", "Admin", $"The chat `{chatRoom}` has been deleted for the reason: the creator has left");
         }
         else
         {
@@ -84,7 +91,7 @@ public class ChatHub : Hub
         
         if (chat == null)
         {
-            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Update failed.");
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room `{chatRoom}` does not exist. Update failed.");
             return;
         }
         

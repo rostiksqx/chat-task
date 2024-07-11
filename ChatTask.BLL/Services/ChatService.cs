@@ -17,7 +17,7 @@ public class ChatService : IChatService
         return await _chatRepository.GetAllChats();
     }
 
-    public async Task<Guid> CreateChat(string name, Guid creatorId)
+    public async Task<(Guid, Exception?)> CreateChat(string name, Guid creatorId)
     {
         var chat = new Chat
         {
@@ -30,7 +30,7 @@ public class ChatService : IChatService
         return await _chatRepository.Add(chat);
     }
 
-    public async Task<Guid> DeleteChat(Guid chatId, Guid creatorId)
+    public async Task<(Guid, Exception?)> DeleteChat(Guid chatId, Guid creatorId)
     {
         var existingChat = await _chatRepository.GetChatById(chatId);
         
@@ -57,7 +57,7 @@ public class ChatService : IChatService
         return await _chatRepository.GetChatsByUserId(userId) ?? null;
     }
     
-    public async Task<Chat> UpdateChat(Guid chatId, string newChatName)
+    public async Task<(Guid, Exception?)> UpdateChat(Guid chatId, string newChatName)
     {
         var existingChat = await _chatRepository.GetChatById(chatId);
         
@@ -66,8 +66,7 @@ public class ChatService : IChatService
             throw new ArgumentException("Chat not found");
         }
         
-        existingChat.Name = newChatName;
-        return await _chatRepository.Update(existingChat);
+        return await _chatRepository.Update(chatId, newChatName);
     }
 
     public async Task<Chat?> GetChatById(Guid chatId)

@@ -5,10 +5,10 @@ namespace ChatTask.Data.Repositories;
 public interface IChatRepository
 {
     Task<List<Chat>> GetAllChats();
-    Task<Guid> Add(Chat chat);
-    Task<Guid> Delete(Guid chatId);
+    Task<(Guid, Exception?)> Add(Chat chat);
+    Task<(Guid, Exception?)> Delete(Guid chatId);
     Task<Chat?> GetChatById(Guid chatId);
     Task<Chat?> GetChatByName(string chatName);
     Task<List<Chat>> GetChatsByUserId(Guid userId);
-    Task<Chat> Update(Chat chat);
+    Task<(Guid, Exception?)> Update(Guid chatId, string newChatName);
 }

@@ -34,7 +34,7 @@ public class ChatRepository : IChatRepository
             }).ToListAsync();
     }
 
-    public async Task<Guid> Add(Chat chat)
+    public async Task<(Guid, Exception?)> Add(Chat chat)
     {
         var chatEntity = new ChatEntity
         {
@@ -45,19 +45,30 @@ public class ChatRepository : IChatRepository
         };
         
         await _dbContext.Chats.AddAsync(chatEntity);
-        await _dbContext.SaveChangesAsync();
+        var ex = await _dbContext.SafeSave();
+
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
         
-        return chatEntity.Id;
+        return (chatEntity.Id, null);
     }
 
-    public async Task<Guid> Delete(Guid chatId)
+    public async Task<(Guid, Exception?)> Delete(Guid chatId)
     {
         await _dbContext.Chats
             .Where(c => c.Id == chatId)
             .ExecuteDeleteAsync();
-        await _dbContext.SaveChangesAsync();
 
-        return chatId;
+        var ex = await _dbContext.SafeSave();
+
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
+        
+        return (chatId, null);
     }
 
     public async Task<Chat?> GetChatById(Guid chatId)
@@ -146,19 +157,25 @@ public class ChatRepository : IChatRepository
         return chats;
     }
     
-    public async Task<Chat> Update(Chat chat)
+    public async Task<(Guid, Exception?)> Update(Guid chatId, string newChatName)
     {
         var chatEntity = await _dbContext.Chats
-            .FirstOrDefaultAsync(c => c.Id == chat.Id);
+            .FirstOrDefaultAsync(c => c.Id == chatId);
 
         if (chatEntity == null)
         {
             throw new ArgumentException("Chat not found");
         }
 
-        chatEntity.Name = chat.Name;
-        await _dbContext.SaveChangesAsync();
+        chatEntity.Name = newChatName;
 
-        return chat;
+        var ex = await _dbContext.SafeSave();
+
+        if (ex != null)
+        {
+            return (Guid.Empty, ex);
+        }
+        
+        return (chatId, null);
     }
 }

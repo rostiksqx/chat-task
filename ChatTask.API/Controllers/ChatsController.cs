@@ -52,7 +52,14 @@ namespace ChatTask.API.Controllers
                 return BadRequest("Chat room with this name already exists. Please choose another name.");
             }
             
-            return Ok(await _chatService.CreateChat(chatName, userId));
+            var result = await _chatService.CreateChat(chatName, userId);
+            
+            if (result.Item2 != null)
+            {
+                return BadRequest(result.Item2.Message);
+            }
+            
+            return Ok(result.Item1);
         }
         
         [HttpPut("update")]
@@ -65,20 +72,27 @@ namespace ChatTask.API.Controllers
                 return BadRequest("Chat not found");
             }
             
-            return Ok(await _chatService.UpdateChat(chatId, newChatName));
+            var result = await _chatService.UpdateChat(chatId, newChatName);
+            
+            if (result.Item2 != null)
+            {
+                return BadRequest(result.Item2.Message);
+            }
+            
+            return Ok(result.Item1);
         }
         
         [HttpDelete("delete")]
         public async Task<ActionResult<Guid>> DeleteChatRoom(Guid chatId, Guid userId)
         {
-            try
+            var result = await _chatService.DeleteChat(chatId, userId);
+            
+            if (result.Item2 != null)
             {
-                return Ok(await _chatService.DeleteChat(chatId, userId));
+                return BadRequest(result.Item2.Message);
             }
-            catch (ArgumentException e)
-            {
-                return BadRequest(e.Message);
-            }
+            
+            return Ok(result.Item1);
         }
     }
 }
