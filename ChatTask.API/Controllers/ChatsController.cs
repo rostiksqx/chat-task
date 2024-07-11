@@ -13,12 +13,10 @@ namespace ChatTask.API.Controllers
     public class ChatsController : ControllerBase
     {
         private readonly IChatService _chatService;
-        private readonly IHubContext<ChatHub> _hubContext;
 
-        public ChatsController(IChatService chatService, IHubContext<ChatHub> hubContext)
+        public ChatsController(IChatService chatService)
         {
             _chatService = chatService;
-            _hubContext = hubContext;
         }
         
         [HttpGet("all")]
@@ -42,6 +40,45 @@ namespace ChatTask.API.Controllers
         {
             var chats = await _chatService.GetChatsByUserId(userId);
             return Ok(chats);
+        }
+        
+        [HttpPost("create")]
+        public async Task<ActionResult<Guid>> CreateChatRoom(string chatName, Guid userId)
+        {
+            var chat = await _chatService.GetChatByName(chatName);
+            
+            if (chat != null)
+            {
+                return BadRequest("Chat room with this name already exists. Please choose another name.");
+            }
+            
+            return Ok(await _chatService.CreateChat(chatName, userId));
+        }
+        
+        [HttpPut("update")]
+        public async Task<ActionResult<ChatResponse>> UpdateChatRoom(Guid chatId, string newChatName)
+        {
+            var chat = await _chatService.GetChatById(chatId);
+            
+            if (chat == null)
+            {
+                return BadRequest("Chat not found");
+            }
+            
+            return Ok(await _chatService.UpdateChat(chatId, newChatName));
+        }
+        
+        [HttpDelete("delete")]
+        public async Task<ActionResult<Guid>> DeleteChatRoom(Guid chatId, Guid userId)
+        {
+            try
+            {
+                return Ok(await _chatService.DeleteChat(chatId, userId));
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

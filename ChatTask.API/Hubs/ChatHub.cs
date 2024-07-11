@@ -72,8 +72,8 @@ public class ChatHub : Hub
         }
         else
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatRoom);
             await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has left the chat");
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatRoom);
         }
     }
     

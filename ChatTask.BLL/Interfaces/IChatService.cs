@@ -10,4 +10,5 @@ public interface IChatService
     Task<Chat?> GetChatByName(string chatName);
     Task<List<Chat>?> GetChatsByUserId(Guid userId);
     Task<Chat> UpdateChat(Guid chatId, string newChatName);
+    Task<Chat?> GetChatById(Guid chatId);
 }

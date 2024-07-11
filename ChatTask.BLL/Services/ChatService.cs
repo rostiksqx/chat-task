@@ -69,4 +69,9 @@ public class ChatService : IChatService
         existingChat.Name = newChatName;
         return await _chatRepository.Update(existingChat);
     }
+
+    public async Task<Chat?> GetChatById(Guid chatId)
+    {
+        return await _chatRepository.GetChatById(chatId) ?? null;
+    }
 }
