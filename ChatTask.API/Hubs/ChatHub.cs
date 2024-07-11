@@ -20,6 +20,12 @@ public class ChatHub : Hub
     {
         var existChat = await _chatService.GetChatByName(chatRoom);
         
+        if (existChat == null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Check the chat room name and try again.");
+            return;
+        }
+        
         await Clients.Group(chatRoom).SendAsync("ReceiveMessage", userId, message);
         
         await _messageService.Add(existChat.Id, userId, message);
@@ -36,6 +42,14 @@ public class ChatHub : Hub
     [HubMethodName("JoinChatRoom")]
     public async Task JoinChatRoom(string chatRoom, string username)
     {
+        var chat = await _chatService.GetChatByName(chatRoom);
+        
+        if (chat == null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Check the chat room name and try again.");
+            return;
+        }
+        
         await Groups.AddToGroupAsync(Context.ConnectionId, chatRoom);
         await Clients.Group(chatRoom).SendAsync("ReceiveMessage", "Admin", $"{username} has joined to the {chatRoom}");
     }
@@ -44,6 +58,13 @@ public class ChatHub : Hub
     public async Task LeaveChatRoom(string chatRoom, Guid userId, string username)
     {
         var chat = await _chatService.GetChatByName(chatRoom);
+        
+        if (chat == null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Leave failed.");
+            return;
+        }
+        
         if (chat.CreatorId == userId)
         {
             await _chatService.DeleteChat(chat.Id, userId);
@@ -60,6 +81,13 @@ public class ChatHub : Hub
     public async Task UpdateChatRoom(string chatRoom, Guid userId, string newChatRoom)
     {
         var chat = await _chatService.GetChatByName(chatRoom);
+        
+        if (chat == null)
+        {
+            await Clients.Caller.SendAsync("ReceiveMessage", "Admin", $"Chat room {chatRoom} does not exist. Update failed.");
+            return;
+        }
+        
         if (chat.CreatorId == userId)
         {
             await _chatService.UpdateChat(chat.Id, newChatRoom);

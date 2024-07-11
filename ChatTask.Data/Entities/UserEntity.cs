@@ -7,4 +7,6 @@ public class UserEntity
     public string Username { get; set; } = null!;
     
     public string PasswordHash { get; set; } = null!;
+    
+    public List<ChatEntity> Chats { get; set; } = new();
 }

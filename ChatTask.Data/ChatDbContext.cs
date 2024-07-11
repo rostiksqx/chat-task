@@ -23,5 +23,11 @@ public class ChatDbContext : DbContext
             .WithOne(m => m.Chat)
             .HasForeignKey(m => m.ChatId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<UserEntity>()
+            .HasMany(u => u.Chats)
+            .WithOne(c => c.Creator)
+            .HasForeignKey(c => c.CreatorId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -47,14 +47,14 @@ public class ChatService : IChatService
         return await _chatRepository.Delete(chatId);
     }
 
-    public async Task<Chat> GetChatByName(string chatName)
+    public async Task<Chat?> GetChatByName(string chatName)
     {
-        return await _chatRepository.GetChatByName(chatName) ?? throw new ArgumentException("Chat not found");
+        return await _chatRepository.GetChatByName(chatName) ?? null;
     }
     
-    public async Task<List<Chat>> GetChatsByUserId(Guid userId)
+    public async Task<List<Chat>?> GetChatsByUserId(Guid userId)
     {
-        return await _chatRepository.GetChatsByUserId(userId);
+        return await _chatRepository.GetChatsByUserId(userId) ?? null;
     }
     
     public async Task<Chat> UpdateChat(Guid chatId, string newChatName)
