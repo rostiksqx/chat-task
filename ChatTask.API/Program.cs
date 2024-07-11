@@ -5,6 +5,7 @@ using ChatTask.Data;
 using ChatTask.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
