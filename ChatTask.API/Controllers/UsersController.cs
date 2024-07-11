@@ -17,7 +17,7 @@ namespace ChatTask.API.Controllers
         }
         
         [HttpPost("register")]
-        public async Task<ActionResult<Guid>> RegisterUser(UserRequest user)
+        public async Task<ActionResult<Guid>> Register(UserRequest user)
         {
             return Ok(await _userService.Register(user.Username, user.Password));
         }

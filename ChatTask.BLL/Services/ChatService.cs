@@ -39,10 +39,10 @@ public class ChatService : IChatService
             throw new ArgumentException("Chat not found");
         }
         
-        // if (existingChat.CreatorId != creatorId)
-        // {
-        //     throw new ArgumentException("You are not the creator of this chat");
-        // }
+        if (existingChat.CreatorId != creatorId)
+        {
+            throw new ArgumentException("You are not the creator of this chat");
+        }
         
         return await _chatRepository.Delete(chatId);
     }
@@ -55,5 +55,18 @@ public class ChatService : IChatService
     public async Task<List<Chat>> GetChatsByUserId(Guid userId)
     {
         return await _chatRepository.GetChatsByUserId(userId);
+    }
+    
+    public async Task<Chat> UpdateChat(Guid chatId, string newChatName)
+    {
+        var existingChat = await _chatRepository.GetChatById(chatId);
+        
+        if (existingChat == null)
+        {
+            throw new ArgumentException("Chat not found");
+        }
+        
+        existingChat.Name = newChatName;
+        return await _chatRepository.Update(existingChat);
     }
 }

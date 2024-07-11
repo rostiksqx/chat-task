@@ -8,5 +8,7 @@ public class Chat
     
     public Guid CreatorId { get; set; }
     
+    public virtual List<Message> Messages { get; set; } = new();
+    
     public DateTime CreatedAt { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using ChatTask.API.Hubs;
+using ChatTask.API.Models;
 using ChatTask.BLL.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,14 +22,23 @@ namespace ChatTask.API.Controllers
         }
         
         [HttpGet("all")]
-        public async Task<IActionResult> GetAllChats()
+        public async Task<ActionResult<ChatResponse>> GetAllChats()
         {
             var chats = await _chatService.GetAllChats();
-            return Ok(chats);
+            
+            var chatResponses = chats.Select(chat => new ChatResponse
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+                Messages = chat.Messages,
+                CreatedAt = chat.CreatedAt
+            }).ToList();
+            
+            return Ok(chatResponses);
         }
         
         [HttpGet("my-rooms")]
-        public async Task<IActionResult> GetMyChats(Guid userId)
+        public async Task<ActionResult<ChatResponse>> GetMyChats(Guid userId)
         {
             var chats = await _chatService.GetChatsByUserId(userId);
             return Ok(chats);

@@ -10,4 +10,5 @@ public interface IChatRepository
     Task<Chat?> GetChatById(Guid chatId);
     Task<Chat?> GetChatByName(string chatName);
     Task<List<Chat>> GetChatsByUserId(Guid userId);
+    Task<Chat> Update(Chat chat);
 }

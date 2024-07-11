@@ -30,9 +30,14 @@ builder.Services.AddDbContext<ChatDbContext>(options =>
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+
 builder.Services.AddTransient<IPasswordHasher, PasswordHasher>();
+
 builder.Services.AddTransient<IChatRepository, ChatRepository>();
 builder.Services.AddTransient<IChatService, ChatService>();
+
+builder.Services.AddTransient<IMessageRepository, MessageRepository>();
+builder.Services.AddTransient<IMessageService, MessageService>();
 
 var app = builder.Build();
 
